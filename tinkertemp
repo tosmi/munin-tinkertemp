@@ -29,9 +29,6 @@ class MuninTinkerTemp(object):
     def __init__(self,):
         self._tt = TinkerTemp()
 
-    def temperature(self,):
-        return self._tt.read_temperature()
-
     def config(self,):
         print """graph_title Room Temperature
 graph_args --lower-limit 0 --upper-limit 50
@@ -46,12 +43,14 @@ temp.min 0
 temp.type GAUGE
 temp.info Room Temperature D114"""
 
+    def fetch(self,):
+        print 'temp.value %s' % self._tt.read_temperature()
 
 if __name__ == "__main__":
     mtt = MuninTinkerTemp()
 
-    if len(sys.argv) >= 2:
+    try:
         if sys.argv[1] == 'config':
             mtt.config()
-    else:
-        print 'temp.value %s' % mtt.temperature()
+    except IndexError, e:
+        mtt.fetch()
