@@ -1,0 +1,58 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+import sys
+
+class TinkerTemp(object):
+    HOST = "localhost"
+    PORT = 4223
+    UID = "dJj" # Change to your UID
+
+    def __init__(self,):
+        from tinkerforge.bricklet_temperature import Temperature
+        from tinkerforge.ip_connection        import IPConnection
+
+        self._ipcon         = IPConnection() # Create IP connection
+        self._temp_bricklet = Temperature(TinkerTemp.UID, self._ipcon) # Create device object
+
+        self._connect()
+
+    def _connect(self,):
+        self._ipcon.connect(TinkerTemp.HOST, TinkerTemp.PORT) # Connect to brickd
+
+    def read_temperature(self,):
+        return self._temp_bricklet.get_temperature()/100.0
+
+    def disconnect(self,):
+        self._ipcon.disconnect()
+
+class MuninTinkerTemp(object):
+    def __init__(self,):
+        self._tt = TinkerTemp()
+
+    def temperature(self,):
+        return self._tt.read_temperature()
+
+    def config(self,):
+        print """graph_title Room Temperature
+graph_order system user nice idle" $extinfo
+graph_args --base 100 -r --lower-limit 0 --upper-limit $graphlimit"
+graph_vlabel %
+graph_scale no
+graph_info This graph shows the room temperature
+graph_category temperature
+graph_period second
+system.label temp
+system.draw AREA
+system.min 0
+system.type DERIVE
+system.info Room Temerature"""
+
+
+if __name__ == "__main__":
+    mtt = MuninTinkerTemp()
+
+    if len(sys.argv) >= 2:
+        if sys.argv[1] == 'config':
+            mtt.config()
+    else:
+        print 'temp.value %s' % mtt.temperature()
