@@ -34,18 +34,17 @@ class MuninTinkerTemp(object):
 
     def config(self,):
         print """graph_title Room Temperature
-graph_order system user nice idle" $extinfo
-graph_args --base 100 -r --lower-limit 0 --upper-limit $graphlimit"
-graph_vlabel %
+graph_args --lower-limit 0 --upper-limit 50
+graph_vlabel C
 graph_scale no
-graph_info This graph shows the room temperature
+graph_info This graph shows the temperature for room D114
 graph_category temperature
 graph_period second
-system.label temp
-system.draw AREA
-system.min 0
-system.type DERIVE
-system.info Room Temerature"""
+temp.label temp
+temp.draw AREA
+temp.min 0
+temp.type GAUGE
+temp.info Room Temperature D114"""
 
 
 if __name__ == "__main__":
